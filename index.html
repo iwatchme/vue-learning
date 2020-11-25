@@ -1,74 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <title>Document</title>
-  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-</head>
+  <body>
+    <div id="app">
+      <todo-list></todo-list>
+    </div>
 
-<body>
-  <div id="app">
-    <todo-list></todo-list>
-  </div>
-
-  <script>
-    Vue.component("todo-item", {
-      props: {
-        title: String,
-        del: {
-          type: Boolean,
-          default: false,
+    <script>
+      Vue.component("todo-item", {
+        props: {
+          title: String,
+          del: {
+            type: Boolean,
+            default: false,
+          },
         },
-      },
-      data: function () {
-        return {};
-      },
-      method: {},
-      template: `<li>
+        data: function () {
+          return {};
+        },
+        methods: {
+          handleClick: function () {
+            console.log("点击");
+            this.$emit("onDelete"); //https://vuejs.org/v2/guide/components-custom-events.html
+          },
+        },
+        template: `<li>
           <span v-if="!del">{{title}}</span>
           <span v-else style="text-decoration: line-through"
             >{{title}}</span>
-          <button v-show="!del">删除</button>
+          <button v-show="!del" v-on:click.stop="handleClick">删除</button>
         </li>`,
-    });
+      });
 
-    Vue.component("todo-list", {
-      template: `
+      Vue.component("todo-list", {
+        template: `
         <ul>
-      <todo-item v-for="item in list" :title="item.title" :del="item.del"></todo-item>
+      <todo-item  @onDelete="handleDelete" v-for="item in list" :title="item.title" :del="item.del"></todo-item>
 
     </ul>
         `,
 
-      data: function () {
-        return {
-          list: [{
-              title: "课程1",
-              del: false,
-            },
-            {
-              title: "课程2",
-              del: true,
-            },
-            {
-              title: "课程3",
-              del: true,
-            },
-          ],
-        };
-      },
-    });
+        methods: {
+          handleDelete: function () {
+            console.log("delete");
+          },
+        },
 
-    var app = new Vue({
-      el: "#app",
-      data: {
-        message: "Hello world",
-      },
-    });
-  </script>
-</body>
+        data: function () {
+          return {
+            list: [
+              {
+                title: "课程1",
+                del: false,
+              },
+              {
+                title: "课程2",
+                del: true,
+              },
+              {
+                title: "课程3",
+                del: true,
+              },
+            ],
+          };
+        },
+      });
 
+      var app = new Vue({
+        el: "#app",
+        data: {
+          message: "Hello world",
+        },
+      });
+    </script>
+  </body>
 </html>
